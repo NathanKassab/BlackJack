@@ -83,6 +83,7 @@ public class Player {
 		botNames.add("Mike Oxlong");
 		botNames.add("Willy Wilickers");
 		botNames.add("Ben Dover");
+		botNames.add("Greg");
 		
 	}
 	

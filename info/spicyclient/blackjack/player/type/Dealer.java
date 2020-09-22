@@ -10,7 +10,8 @@ public class Dealer extends Bot {
 	
 	public void hit(Player player) {
 		
-		
+		player.giveCard(this.hand.get(0));
+		this.hand.remove(0);
 		
 	}
 	

@@ -17,6 +17,12 @@ public class GameManager {
 	
 	public void Start(Player... humans) {
 		
+		for (Player h : humans) {
+			
+			players.add(h);
+			
+		}
+		
 		for (int i = 0; i < 4 - humans.length + 1; i++) {
 			
 			players.add(new Bot());
@@ -26,8 +32,20 @@ public class GameManager {
 		dealer = new Dealer();
 		players.add(dealer);
 		
+		for (int i = players.size(); i < 4; i++) {
+			
+			
+			
+		}
+		
 		GenerateDeck(5);
 		ShuffleCards();
+		
+		for (Player p : this.players) {
+			
+			System.out.println(p.name);
+			
+		}
 		
 	}
 	
@@ -45,7 +63,6 @@ public class GameManager {
 			
 			dealer.hand.remove(dealer.hand.indexOf(c));
 			dealer.hand.add(c);
-			System.out.println(c.getName());
 			
 		}
 		
