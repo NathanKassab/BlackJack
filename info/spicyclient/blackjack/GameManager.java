@@ -15,6 +15,8 @@ public class GameManager {
 	
 	public Dealer dealer;
 	
+	public int currentPLayer = 0;
+	
 	public void Start(Player... humans) {
 		
 		for (Player h : humans) {
@@ -44,6 +46,16 @@ public class GameManager {
 		for (Player p : this.players) {
 			
 			System.out.println(p.name);
+			
+		}
+		
+	}
+	
+	public void hit(Player player) {
+		
+		if (player.equals(this.players.get(currentPLayer))) {
+			
+			dealer.hit(player);
 			
 		}
 		
