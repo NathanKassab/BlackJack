@@ -23,7 +23,7 @@ public class GameManager {
 			
 		}
 		
-		for (int i = 0; i < 4 - humans.length + 1; i++) {
+		for (int i = 0; i < 3 - humans.length; i++) {
 			
 			players.add(new Bot());
 			

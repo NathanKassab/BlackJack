@@ -14,11 +14,8 @@ public class Main {
 		Player.addBotNames();
 		game = new GameManager();
 		
-		// Just use scanner for now and add startup gui later
-		Scanner s = new Scanner(System.in);
-		
-		System.out.println("Type your name");
-		game.Start(new Human(s.nextLine()));
+		// Just use string for now and add startup gui later
+		game.Start(new Human("Nathan"));
 		
 	}
 	
