@@ -1,7 +1,5 @@
 package info.spicyclient.blackjack;
 
-import java.util.Scanner;
-
 import info.spicyclient.blackjack.player.Player;
 import info.spicyclient.blackjack.player.type.Human;
 
@@ -15,12 +13,8 @@ public class Main {
 		game = new GameManager();
 		
 		// Just use string for now and add startup gui later
-		game.Start(new Human("Nathan"));
+		game.Start(10, new Human("Nathan"));
 		
-	}
-	
-	public static GameManager getGameManager() {
-		return game;
 	}
 	
 }

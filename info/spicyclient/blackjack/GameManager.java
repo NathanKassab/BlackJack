@@ -6,18 +6,25 @@ import java.util.Random;
 import info.spicyclient.blackjack.cards.Card;
 import info.spicyclient.blackjack.cards.Suit;
 import info.spicyclient.blackjack.cards.Type;
-import info.spicyclient.blackjack.player.Player;
+import info.spicyclient.blackjack.gui.Gui;
+import info.spicyclient.blackjack.player.*;
 import info.spicyclient.blackjack.player.type.*;
 
 public class GameManager {
+	
+	public static GameManager gameManager;
 	
 	public ArrayList<Player> players = new ArrayList<>();
 	
 	public Dealer dealer;
 	
-	public int currentPLayer = 0;
+	public int currentPlayer = -1;
 	
-	public void Start(Player... humans) {
+	public boolean gameStarted = false;
+	
+	public void Start(int decks, Player... humans) {
+		
+		gameManager = this;
 		
 		for (Player h : humans) {
 			
@@ -40,24 +47,31 @@ public class GameManager {
 			
 		}
 		
-		GenerateDeck(5);
+		GenerateDeck(decks);
 		ShuffleCards();
+		StartRound();
 		
-		for (Player p : this.players) {
-			
-			System.out.println(p.name);
-			
-		}
+		Gui.showStartScreen();
 		
 	}
 	
-	public void hit(Player player) {
+	public static GameManager getGameManager() {
+		return gameManager;
+	}
+
+	public static void setGameManager(GameManager gameManager) {
+		GameManager.gameManager = gameManager;
+	}
+
+	private void StartRound() {
 		
-		if (player.equals(this.players.get(currentPLayer))) {
-			
-			dealer.hit(player);
-			
-		}
+		
+		
+	}
+	
+	public Player getCurrentPlayer() {
+		
+		return this.players.get(currentPlayer);
 		
 	}
 	
@@ -93,6 +107,31 @@ public class GameManager {
 					dealer.hand.add(new Card(s, t));
 					
 				}
+				
+			}
+			
+		}
+		
+	}
+	
+	public void cyclePlayers() {
+		
+		currentPlayer++;
+		
+		if (currentPlayer > players.size() - 1) {
+			
+			
+			
+		}else {
+			System.out.println(currentPlayer + "");
+			if (players.get(currentPlayer) instanceof Human) {
+				
+				Human player = (Human) players.get(currentPlayer);
+				Gui.window.setVisible(false);
+				int x = Gui.window.getX(), y = Gui.window.getY();
+				Gui.window = player.gui.window;
+				Gui.window.setLocation(x, y);
+				Gui.window.setVisible(true);
 				
 			}
 			
