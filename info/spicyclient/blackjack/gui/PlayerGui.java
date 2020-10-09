@@ -7,7 +7,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import info.spicyclient.blackjack.gui.eventListeners.ButtonHit;
+import info.spicyclient.blackjack.cards.Card;
+import info.spicyclient.blackjack.gui.eventListeners.*;
 import info.spicyclient.blackjack.player.type.Human;
 
 public class PlayerGui {
@@ -16,7 +17,8 @@ public class PlayerGui {
 		
 		window.setSize(450, 600);
 		window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		Panel = new JPanel(new GridLayout(10, 4));
+		panelLayout = new GridLayout(5 + player.hand.size() + player.hand.size(), 1);
+		panel = new JPanel(panelLayout);
 		window.setAlwaysOnTop(true);
 		
 		this.player = player;
@@ -25,23 +27,77 @@ public class PlayerGui {
 		this.name.setHorizontalAlignment(0);
 		this.name.setFont(Fonts.title1);
 		
-		hit = new JButton();
-		hit.addActionListener(new ButtonHit());
-		hit.setText("hit");
-		hit.setEnabled(false);
+		this.bal.setText("$" + player.balance);
+		this.bal.setHorizontalAlignment(0);
+		this.bal.setFont(Fonts.subTitle1);
 		
-		Panel.add(this.name);
-		Panel.add(hit);
+		hit_button = new JButton();
+		hit_button.addActionListener(new ButtonHit());
+		hit_button.setText("Hit");
+		hit_button.setEnabled(true);
+		hit_button.setFont(Fonts.subTitle1);
 		
-		window.add(Panel);
+		stand_button = new JButton();
+		stand_button.addActionListener(new ButtonStand());
+		stand_button.setText("Stand");
+		stand_button.setEnabled(true);
+		stand_button.setFont(Fonts.subTitle1);
+		
+		double_button = new JButton();
+		double_button.addActionListener(new ButtonDouble());
+		double_button.setText("Double");
+		double_button.setEnabled((player.bet * 2) <= player.balance);
+		double_button.setFont(Fonts.subTitle1);
+		
+		split_button = new JButton();
+		split_button.addActionListener(new ButtonSplit());
+		split_button.setText("Split");
+		split_button.setEnabled(false);
+		split_button.setFont(Fonts.subTitle1);
+		
+		addStuffTOGui();
+		
+		window.add(panel);
+		
+	}
+	
+	public void addStuffTOGui() {
+		
+		panelLayout = new GridLayout(6 + player.hand.size(), 1);
+		panel.setLayout(panelLayout);
+		
+		panel.add(this.name);
+		panel.add(this.bal);
+		panel.add(hit_button);
+		panel.add(stand_button);
+		panel.add(double_button);
+		panel.add(split_button);
+		
+		for (Card c: player.hand) {
+			
+			JLabel card = new JLabel();
+			card.setText(c.getName());
+			card.setFont(Fonts.subTitle1);
+			card.setHorizontalAlignment(0);
+			
+			panel.add(card);
+			
+		}
 		
 	}
 	
 	public JFrame window = new JFrame("Blackjack");
-	public JPanel Panel = new JPanel(new GridLayout(1, 2));
+	public JPanel panel = new JPanel(new GridLayout(1, 2));
 	
-	public JButton hit = new JButton();
+	public GridLayout panelLayout = new GridLayout(5, 1);
+	
+	public JButton hit_button = new JButton();
+	public JButton stand_button = new JButton();
+	public JButton double_button = new JButton();
+	public JButton split_button = new JButton();
+	
 	public JLabel name = new JLabel();
+	public JLabel bal = new JLabel();
 	
 	public Human player;
 	

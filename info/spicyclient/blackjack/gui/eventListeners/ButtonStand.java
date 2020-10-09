@@ -5,7 +5,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.Action;
 
-public class ButtonHit implements Action {
+public class ButtonStand implements Action {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -47,5 +47,5 @@ public class ButtonHit implements Action {
 		// TODO Auto-generated method stub
 		
 	}
-	
+
 }

@@ -1,5 +1,6 @@
 package info.spicyclient.blackjack;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -114,6 +115,7 @@ public class GameManager {
 		
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void cyclePlayers() {
 		
 		currentPlayer++;
@@ -123,15 +125,28 @@ public class GameManager {
 			
 			
 		}else {
-			System.out.println(currentPlayer + "");
+			
 			if (players.get(currentPlayer) instanceof Human) {
 				
 				Human player = (Human) players.get(currentPlayer);
+				
+				dealer.hit(player);
+				dealer.hit(player);
+				
+				player.gui.addStuffTOGui();
+				
 				Gui.window.setVisible(false);
-				int x = Gui.window.getX(), y = Gui.window.getY();
+				int x = Gui.window.getX(), y = Gui.window.getY(), fullscreen = Gui.window.getExtendedState();
+				Dimension size = Gui.window.size();
 				Gui.window = player.gui.window;
 				Gui.window.setLocation(x, y);
+				Gui.window.setExtendedState(fullscreen);
+				Gui.window.setSize(size);
 				Gui.window.setVisible(true);
+				
+			}else {
+				
+				
 				
 			}
 			

@@ -16,6 +16,40 @@ public class Player {
 	public String name;
 	public ArrayList<Card> hand = new ArrayList<>();
 	
+	public double balance = 1000, bet = 0;
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public ArrayList<Card> getHand() {
+		return hand;
+	}
+
+	public void setHand(ArrayList<Card> hand) {
+		this.hand = hand;
+	}
+
+	public double getBalance() {
+		return balance;
+	}
+
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
+
+	public static ArrayList<String> getBotNames() {
+		return botNames;
+	}
+
+	public static void setBotNames(ArrayList<String> botNames) {
+		Player.botNames = botNames;
+	}
+
 	public int getValueOfHand() {
 		
 		int number = 0;
@@ -84,6 +118,9 @@ public class Player {
 		botNames.add("Willy Wilickers");
 		botNames.add("Ben Dover");
 		botNames.add("Greg");
+		botNames.add("Pablito");
+		botNames.add("One big gay");
+		botNames.add("Me Me Big Boy");
 		
 	}
 	
