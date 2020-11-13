@@ -76,6 +76,9 @@ public class GameManager {
 	}
 	
 	public static GameManager getGameManager() {
+		if (gameManager == null) {
+			gameManager = new GameManager();
+		}
 		return gameManager;
 	}
 
