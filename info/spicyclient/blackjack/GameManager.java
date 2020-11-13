@@ -4,12 +4,15 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.swing.JFrame;
+
+import info.spicyclient.blackjack.botUtils.Utils;
 import info.spicyclient.blackjack.cards.Card;
 import info.spicyclient.blackjack.cards.Suit;
 import info.spicyclient.blackjack.cards.Type;
 import info.spicyclient.blackjack.gui.Gui;
 import info.spicyclient.blackjack.player.*;
-import info.spicyclient.blackjack.player.type.*;
+import info.spicyclient.blackjack.player.types.*;
 
 public class GameManager {
 	
@@ -23,9 +26,22 @@ public class GameManager {
 	
 	public boolean gameStarted = false;
 	
+	public Utils botUtils = new Utils();
+	
+	private Player[] humans = null;
+	private int decks = 0;
+	
+	public JFrame fakeBotWindow = null;
+	
 	public void Start(int decks, Player... humans) {
 		
+		this.humans = humans;
+		this.decks = decks;
+		
 		gameManager = this;
+		
+		dealer = new Dealer();
+		players.add(dealer);
 		
 		for (Player h : humans) {
 			
@@ -39,9 +55,6 @@ public class GameManager {
 			
 		}
 		
-		dealer = new Dealer();
-		players.add(dealer);
-		
 		for (int i = players.size(); i < 4; i++) {
 			
 			
@@ -53,6 +66,9 @@ public class GameManager {
 		StartRound();
 		
 		Gui.showStartScreen();
+		if (fakeBotWindow != null) {
+			fakeBotWindow.setVisible(false);
+		}
 		
 	}
 	
@@ -66,13 +82,22 @@ public class GameManager {
 
 	private void StartRound() {
 		
-		
+		dealer.hit(dealer);
+		dealer.hit(dealer);
+		if (getCurrentPlayer() instanceof Human) {
+			((Human)getCurrentPlayer()).gui.refreshGui();
+		}
 		
 	}
 	
 	public Player getCurrentPlayer() {
 		
-		return this.players.get(currentPlayer);
+		try {
+			return this.players.get(currentPlayer);
+		} catch (IndexOutOfBoundsException e) {
+			cyclePlayers();
+			return this.players.get(currentPlayer);
+		}
 		
 	}
 	
@@ -122,8 +147,6 @@ public class GameManager {
 		
 		if (currentPlayer > players.size() - 1) {
 			
-			
-			
 		}else {
 			
 			if (players.get(currentPlayer) instanceof Human) {
@@ -146,7 +169,18 @@ public class GameManager {
 				
 			}else {
 				
+				if (fakeBotWindow != null) {
+					fakeBotWindow.setVisible(false);
+				}
 				
+				if (currentPlayer != 0 && this.players.get(currentPlayer - 1) instanceof Human) {
+					((Human)this.players.get(currentPlayer - 1)).gui.window.setVisible(false);
+				}
+				
+				fakeBotWindow = null;
+				dealer.hit(getCurrentPlayer());
+				dealer.hit(getCurrentPlayer());
+				botUtils.fakePlayerScreen(getCurrentPlayer());
 				
 			}
 			

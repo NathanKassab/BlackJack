@@ -1,4 +1,4 @@
-package info.spicyclient.blackjack.player.type;
+package info.spicyclient.blackjack.player.types;
 
 import info.spicyclient.blackjack.gui.PlayerGui;
 import info.spicyclient.blackjack.player.Player;

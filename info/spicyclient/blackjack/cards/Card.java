@@ -68,7 +68,7 @@ public class Card {
 	
 	public String getName() {
 		
-		return type + " OF " + suit;
+		return (type + " OF " + suit).toLowerCase();
 		
 	}
 	

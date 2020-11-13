@@ -1,11 +1,11 @@
-package info.spicyclient.blackjack.player.type;
+package info.spicyclient.blackjack.player.types;
 
 import info.spicyclient.blackjack.player.Player;
 
 public class Bot extends Player {
 
 	public Bot() {
-		super(getRandomName());
+		super(getRandomName() + " - [BOT]");
 	}
 
 }

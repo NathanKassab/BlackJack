@@ -5,11 +5,17 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.Action;
 
+import info.spicyclient.blackjack.GameManager;
+import info.spicyclient.blackjack.player.Player;
+import info.spicyclient.blackjack.player.types.Human;
+
 public class ButtonStand implements Action {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
+		GameManager gm = GameManager.getGameManager();
+		Player player = (Player) gm.getCurrentPlayer();
+		gm.cyclePlayers();
 	}
 
 	@Override

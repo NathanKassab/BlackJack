@@ -1,7 +1,7 @@
 package info.spicyclient.blackjack;
 
 import info.spicyclient.blackjack.player.Player;
-import info.spicyclient.blackjack.player.type.Human;
+import info.spicyclient.blackjack.player.types.Human;
 
 public class Main {
 	

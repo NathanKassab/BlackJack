@@ -12,7 +12,7 @@ public class Gui {
 	
 	public static void showStartScreen() {
 		
-		window.setSize(450, 600);
+		window.setSize(750, 600);
 		window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		JPanel panel = new JPanel(new GridLayout(1, 2));
 		window.setAlwaysOnTop(true);

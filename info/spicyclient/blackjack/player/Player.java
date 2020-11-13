@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import info.spicyclient.blackjack.cards.Card;
 import info.spicyclient.blackjack.cards.Type;
+import info.spicyclient.blackjack.player.types.Dealer;
 
 public class Player {
 	
@@ -85,11 +86,17 @@ public class Player {
 	
 	public void giveCard(Card card) {
 		
+		if (this instanceof Dealer) {
+			Dealer d = (Dealer) this;
+			d.dealersHand.add(card);
+			return;
+		}
+		
 		this.hand.add(card);
 		
 	}
 	
-	public boolean ifBusted() {
+	public boolean isBusted() {
 		return (getValueOfHand() > 21);
 	}
 	
