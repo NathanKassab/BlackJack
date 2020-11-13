@@ -4,9 +4,12 @@ import info.spicyclient.blackjack.player.Player;
 import info.spicyclient.blackjack.player.types.Bot;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,18 +21,19 @@ import info.spicyclient.blackjack.cards.Card;
 import info.spicyclient.blackjack.gui.Fonts;
 import info.spicyclient.blackjack.gui.eventListeners.*;
 
-
 public class Utils {
+	
+	public static PlayerGui playerGui = null;
 	
 	public void fakePlayerScreen(Player player) {
 		
-		PlayerGui playerGui = new PlayerGui(player);
+		playerGui = new PlayerGui(player);
 		playerGui.refreshGui();
 		GameManager.getGameManager().fakeBotWindow = playerGui.window;
 		
 	}
 	
-	public void makeBotMoves(Bot b) {
+	public static void makeBotMoves(Bot bot) {
 		
 		GameManager gm = GameManager.getGameManager();
 		
@@ -39,20 +43,76 @@ public class Utils {
 		Random random = new Random();
 		
 		// These are out of 100
-		int hitChance = 50, standChance = 50, risk = 0;
+		int hitChance = 50, risk = 0;
 		
-		if (b.getValueOfHand() > 10) {
-			risk += 50;
+		if (bot.getValueOfHand() > 18) {
+			risk += 95;
+		}
+		else if (bot.getValueOfHand() > 16) {
+			risk += 70;
+		}
+		else if (bot.getValueOfHand() > 11) {
+			risk += 45;
+		}
+		else if (bot.getValueOfHand() <= 11) {
+			risk += 0;
 		}
 		
-		if (dealersHandValue < 15) {
-			standChance += 75;
-			hitChance -= 20;
+		if (dealersHandValue <= 15) {
+			hitChance -= 45;
+		}
+		
+		if (bot.getValueOfHand() < dealersHandValue) {
+			hitChance += 60;
+		}
+		
+		if (risk <= 25) {
+			hitChance += 20;
+		}
+		else if (risk <= 10) {
+			hitChance += 40;
+		}
+		
+		if (bot.getValueOfHand() == 21) {
+			botStand(bot);
+		}
+		else if (risk == 0) {
+			botHit(bot);
+		}
+		else if (hitChance >= 100){
+			botHit(bot);
+		}else {
+			
+			int willingRiskLevel = 50 + random.nextInt(50);
+			
+			if (risk <= willingRiskLevel) {
+				
+				if (random.nextInt(100) <= hitChance) {
+					botHit(bot);
+				}else {
+					botStand(bot);
+				}
+				
+			}else {
+				botStand(bot);
+			}
+			
 		}
 		
 	}
 	
-	private class PlayerGui {
+	private static void botHit(Bot bot) {
+		GameManager.getGameManager().dealer.hit(bot);
+		makeBotMoves(bot);
+		playerGui.refreshGui();
+	}
+	
+	private static void botStand(Bot bot) {
+		bot.doneWithTurn = true;
+		playerGui.refreshGui();
+	}
+	
+	public class PlayerGui {
 		
 		private JLabel yourHand = new JLabel("Bot's hand:"), dealersHand = new JLabel("Dealer's hand:");
 		
@@ -65,20 +125,14 @@ public class Utils {
 			window.setAlwaysOnTop(true);
 			
 			this.player = player;
-			stringName = "Bot:" + player.name;
+			stringName = player.name;
 			this.name.setText(stringName);
 			this.name.setHorizontalAlignment(0);
-			this.name.setFont(Fonts.title1);
+			this.name.setFont(Fonts.subTitle1);
 			
 			this.bal.setText("$" + player.balance);
 			this.bal.setHorizontalAlignment(0);
 			this.bal.setFont(Fonts.subTitle1);
-			
-			hit_button = new JButton();
-			hit_button.addActionListener(new ButtonHit());
-			hit_button.setText("Continue");
-			hit_button.setEnabled(true);
-			hit_button.setFont(Fonts.subTitle1);
 			
 			stand_button = new JButton();
 			stand_button.addActionListener(new ButtonStand());
@@ -86,23 +140,7 @@ public class Utils {
 			stand_button.setEnabled(true);
 			stand_button.setFont(Fonts.subTitle1);
 			
-			double_button = new JButton();
-			double_button.addActionListener(new ButtonDouble());
-			double_button.setText("Double");
-			double_button.setEnabled((player.bet * 2) <= player.balance);
-			double_button.setFont(Fonts.subTitle1);
-			
-			split_button = new JButton();
-			split_button.addActionListener(new ButtonSplit());
-			split_button.setText("Split");
-			split_button.setEnabled(false);
-			split_button.setFont(Fonts.subTitle1);
-			
 			addStuffTOGui();
-			
-			if (player.hand.size() == 2 && player.getValueOfHand() == 20 && player.hand.get(0).type == player.hand.get(1).type) {
-				split_button.setEnabled(true);
-			}
 			
 			window.add(panel);
 			
@@ -111,7 +149,7 @@ public class Utils {
 		public void addStuffTOGui() {
 			
 			try {
-				panelLayout = new GridLayout((12 + player.hand.size() + GameManager.getGameManager().dealer.dealersHand.size()) / 2, 2);
+				panelLayout = new GridLayout(3 + player.hand.size(), 2);
 			} catch (NullPointerException e) {
 				panelLayout = new GridLayout(6 + player.hand.size(), 1);
 			}
@@ -119,11 +157,8 @@ public class Utils {
 			
 			panel.add(this.name);
 			panel.add(this.bal);
-			panel.add(hit_button);
+			panel.add(stand_button);
 			panel.add(new JLabel(""));
-			//panel.add(stand_button);
-			//panel.add(double_button);
-			//panel.add(split_button);
 			panel.add(yourHand);
 			panel.add(dealersHand);
 			
@@ -187,48 +222,28 @@ public class Utils {
 			stringName = player.name;
 			this.name.setText(stringName);
 			this.name.setHorizontalAlignment(0);
-			this.name.setFont(Fonts.title1);
+			this.name.setFont(Fonts.subTitle1);
 			
 			this.bal.setText("$" + player.balance);
 			this.bal.setHorizontalAlignment(0);
 			this.bal.setFont(Fonts.subTitle1);
 			
-			hit_button = new JButton();
-			hit_button.addActionListener(new ButtonHit());
-			hit_button.setText("Continue");
-			hit_button.setEnabled(true);
-			hit_button.setFont(Fonts.subTitle1);
-			
 			stand_button = new JButton();
-			stand_button.addActionListener(new ButtonStand());
-			stand_button.setText("Stand");
+			stand_button.addActionListener(new ButtonListener());
+			
+			if (((Bot)player).doneWithTurn) {
+				stand_button.setText("Continue");
+			}else {
+				stand_button.setText("Take turn");
+			}
+			
 			stand_button.setEnabled(true);
 			stand_button.setFont(Fonts.subTitle1);
-			
-			double_button = new JButton();
-			double_button.addActionListener(new ButtonDouble());
-			double_button.setText("Double");
-			double_button.setEnabled((player.bet * 2) <= player.balance);
-			double_button.setFont(Fonts.subTitle1);
-			
-			split_button = new JButton();
-			split_button.addActionListener(new ButtonSplit());
-			split_button.setText("Split");
-			split_button.setEnabled(false);
-			split_button.setFont(Fonts.subTitle1);
 			
 			addStuffTOGui();
 			
 			if (player.isBusted()) {
 				name.setText("BUSTED!");
-				panel.remove(hit_button);
-				panel.remove(stand_button);
-				panel.remove(double_button);
-				panel.remove(split_button);
-			}
-			
-			if (player.hand.size() == 2 && player.getValueOfHand() == 20) {
-				split_button.setEnabled(true);
 			}
 			
 			window.add(panel);
@@ -241,10 +256,7 @@ public class Utils {
 		
 		public GridLayout panelLayout = new GridLayout(5, 1);
 		
-		public JButton hit_button = new JButton();
 		public JButton stand_button = new JButton();
-		public JButton double_button = new JButton();
-		public JButton split_button = new JButton();
 		
 		public JLabel name = new JLabel();
 		public JLabel bal = new JLabel();
@@ -254,6 +266,63 @@ public class Utils {
 		public String stringName = "Sample Name";
 		
 	}
+	
+	private class ButtonListener implements Action {
 
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			if (GameManager.getGameManager().getCurrentPlayer() instanceof Bot) {
+				
+				Bot bot = (Bot) GameManager.getGameManager().getCurrentPlayer();
+				
+				if (bot.doneWithTurn) {
+					bot.doneWithTurn = false;
+					GameManager.getGameManager().cyclePlayers();
+				}else {
+					makeBotMoves(bot);
+				}
+				
+			}
+			
+		}
+
+		@Override
+		public Object getValue(String key) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void putValue(String key, Object value) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setEnabled(boolean b) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public boolean isEnabled() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void addPropertyChangeListener(PropertyChangeListener listener) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void removePropertyChangeListener(PropertyChangeListener listener) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
 	
 }

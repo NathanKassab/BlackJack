@@ -30,7 +30,7 @@ public class PlayerGui {
 		stringName = player.name;
 		this.name.setText(stringName);
 		this.name.setHorizontalAlignment(0);
-		this.name.setFont(Fonts.title1);
+		this.name.setFont(Fonts.subTitle1);
 		
 		this.bal.setText("$" + player.balance);
 		this.bal.setHorizontalAlignment(0);
@@ -73,7 +73,7 @@ public class PlayerGui {
 	public void addStuffTOGui() {
 		
 		try {
-			panelLayout = new GridLayout((16 + player.hand.size() + GameManager.getGameManager().dealer.dealersHand.size()) / 2, 2);
+			panelLayout = new GridLayout(4 + player.hand.size(), 2);
 		} catch (NullPointerException e) {
 			panelLayout = new GridLayout(6 + player.hand.size(), 1);
 		}
@@ -182,8 +182,8 @@ public class PlayerGui {
 		
 		if (player.isBusted()) {
 			name.setText("BUSTED!");
+			stand_button.setText("Continue");
 			panel.remove(hit_button);
-			panel.remove(stand_button);
 			panel.remove(double_button);
 			panel.remove(split_button);
 		}

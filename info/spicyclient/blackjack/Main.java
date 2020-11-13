@@ -13,7 +13,7 @@ public class Main {
 		game = new GameManager();
 		
 		// Just use string for now and add startup gui later
-		game.Start(10, new Human("Nathan"));
+		game.Start(10, 100, new Human("Nathan"));
 		
 	}
 	

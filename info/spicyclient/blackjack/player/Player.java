@@ -126,8 +126,8 @@ public class Player {
 		botNames.add("Ben Dover");
 		botNames.add("Greg");
 		botNames.add("Pablito");
-		botNames.add("One big gay");
 		botNames.add("Me Me Big Boy");
+		botNames.add("Hugh Brandity");
 		
 	}
 	

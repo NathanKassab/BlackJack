@@ -33,10 +33,13 @@ public class GameManager {
 	
 	public JFrame fakeBotWindow = null;
 	
-	public void Start(int decks, Player... humans) {
+	public float defaultBetAmount = 0.0f;
+	
+	public void Start(int decks, float betAmount, Player... humans) {
 		
-		this.humans = humans;
 		this.decks = decks;
+		this.defaultBetAmount = betAmount;
+		this.humans = humans;
 		
 		gameManager = this;
 		
@@ -49,7 +52,7 @@ public class GameManager {
 			
 		}
 		
-		for (int i = 0; i < 3 - humans.length; i++) {
+		for (int i = 0; i < 4 - humans.length; i++) {
 			
 			players.add(new Bot());
 			
@@ -146,8 +149,10 @@ public class GameManager {
 		currentPlayer++;
 		
 		if (currentPlayer > players.size() - 1) {
-			
+			currentPlayer--;
 		}else {
+			
+			players.get(currentPlayer).bet = defaultBetAmount;
 			
 			if (players.get(currentPlayer) instanceof Human) {
 				
@@ -169,12 +174,14 @@ public class GameManager {
 				
 			}else {
 				
+				Gui.window.setVisible(false);
+				
 				if (fakeBotWindow != null) {
 					fakeBotWindow.setVisible(false);
 				}
 				
-				if (currentPlayer != 0 && this.players.get(currentPlayer - 1) instanceof Human) {
-					((Human)this.players.get(currentPlayer - 1)).gui.window.setVisible(false);
+				if (currentPlayer != 0 && this.players.get(currentPlayer) instanceof Human) {
+					((Human)this.players.get(currentPlayer)).gui.window.setVisible(false);
 				}
 				
 				fakeBotWindow = null;
